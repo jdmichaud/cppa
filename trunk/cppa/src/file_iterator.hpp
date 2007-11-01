@@ -30,6 +30,8 @@ public:
     }
     else
       m_current_file = m_files[m_file_index++];
+      
+    tokenize(CPP_EXTENSIONS, ";", m_cpp_extensions);
   }
 
   std::string operator*()
@@ -40,6 +42,15 @@ public:
   std::string get_current_file()
   {
     return m_current_file;
+  }
+
+  void tokenize(const std::string &str, const std::string &separator, std::vector<std::string> &v)
+  {
+     typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
+     boost::char_separator<char>  sep(separator.c_str());
+     tokenizer                    tokens(str, sep);
+     for (tokenizer::iterator     tok_iter = tokens.begin(); tok_iter != tokens.end(); ++tok_iter)
+       v.push_back(*tok_iter);
   }
 
   void operator++()
@@ -94,6 +105,8 @@ private:
   unsigned int              m_file_index;
   unsigned int              m_folder_index;
   std::string               m_current_file;
+
+  std::vector<std::string>  m_cpp_extensions;
 };
 
 #endif // ! _FILE_ITERATOR_HPP_
