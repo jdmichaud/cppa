@@ -3,6 +3,8 @@
 
 #define VERSION         "0.0.1"
 
+#define DEFAULT_DB_FILE "output.db"
+
 #define CPP_EXTENSIONS  "h;hh;hpp;hxx;c;cc;cxx;cpp"
 #define CLASS_REGEX     "^(template[[:space:]]*<[^;:{]+>[[:space:]]*)?(class|struct)[[:space:]]*(\\<\\w+\\>([[:blank:]]*\\([^)]*\\))?[[:space:]]*)*(\\<\\w*\\>)[[:space:]]*(<[^;:{]+>[[:space:]]*)?(\\{|:[^;\\{]*\\{)"
 

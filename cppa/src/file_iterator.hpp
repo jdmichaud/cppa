@@ -26,8 +26,7 @@ public:
     {
       if (m_folders.empty())
         throw std::exception("no file or folder to iterate");
-      else
-        m_current_file = m_folders[m_folder_index++];
+
     }
     else
       m_current_file = m_files[m_file_index++];
@@ -37,6 +36,9 @@ public:
 
   std::string operator*()
   {
+    if (m_current_file == end())
+      operator++();
+
     return get_current_file();
   }
 
@@ -96,7 +98,7 @@ public:
           {
             if (is_cpp_file(itr->path().leaf()))
             {
-              m_files.push_back(itr->path().leaf());
+              m_files.push_back(itr->path().string());
               found = true;
             }
           }
