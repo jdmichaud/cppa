@@ -6,6 +6,7 @@
 #include <exception>
 #include <logging.hpp>
 
+#include "boost/regex.hpp"
 #include "boost/filesystem.hpp"   // includes all needed Boost.Filesystem declarations
 
 namespace fs = boost::filesystem;
@@ -53,14 +54,29 @@ public:
        v.push_back(*tok_iter);
   }
 
+  bool is_cpp_file(const std::string &filename)
+  {
+    for (unsigned int i = 0; i < m_cpp_extensions.size(); ++i)
+    {
+      boost::regex  re(std::string(".*\\.") + m_cpp_extensions[i] + "$");
+      boost::smatch what;
+      if (boost::regex_search(filename, what, re))
+        return true;
+    }
+    return false;
+  }
+
   void operator++()
   {
     if (!m_files.empty() && m_file_index < m_files.size())
+    {
       m_current_file = m_files[m_file_index++];
+      return ;
+    }
     else if (!m_folders.empty() && m_folder_index < m_folders.size())
     {
       bool found = false;
-      for ( ; !found; ++m_folder_index)
+      for ( ; !found && m_folder_index < m_folders.size(); ++m_folder_index)
       {
         if (!fs::exists(m_folders[m_folder_index])) 
         {
@@ -75,12 +91,14 @@ public:
           if (fs::is_directory(itr->status()) && m_recursive)
           {
             m_folders.push_back(itr->path().string());
-            found = true;
           }
           else
           {
-            m_files.push_back(itr->path().leaf());
-            found = true;
+            if (is_cpp_file(itr->path().leaf()))
+            {
+              m_files.push_back(itr->path().leaf());
+              found = true;
+            }
           }
         }
       }
@@ -92,7 +110,7 @@ public:
       m_current_file = "";
   }
 
-  std::string end()
+  static std::string end()
   {
     return "";
   }
