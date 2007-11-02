@@ -6,7 +6,7 @@ class toto
 // un ptit commentaire qui fait mal
 };
 
-class
+ class
 titi {};
 
 template <  type_a_la_con> class tutu {};
@@ -35,3 +35,7 @@ class XRDataMgrImpl : public CAL_BASE_CLASS(CfiXRDataMgr), //## Inherits: <unnam
                         public XRImProcPropertyHandler  //## Inherits: <unnamed>%3E953CCB0075
 {
 };
+
+template<typename t> 
+class class_with_template
+{};

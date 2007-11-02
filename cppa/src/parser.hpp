@@ -40,7 +40,7 @@ public:
       // what[6] contains the template specialisation if any. 
       // add class name and position to map: 
       cm.add_class(std::string(what[5].first, what[5].second),
-                   std::string(what[6].first, what[6].second),
+                   std::string(what[3].first, what[3].second),
                    filename, what[5].first - file_content.begin());
 
       // update search position: 
