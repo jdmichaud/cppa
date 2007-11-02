@@ -78,18 +78,18 @@ public:
                   boost::logging::error, 
                   "error: the recursive option shall be used when (a) folder(s) is/are specified");
         return false;
-
-        /*
-         * Fill in the configuration object with the options parsed
-         */
-        m_config_file = vm["config-file"].as<std::string>();
-        m_database_file = (vm.count("db-file")) ? vm["db-file"].as<std::string>() : "";
-        if (vm.count("input-file")) 
-          m_input_file_vector = vm["input-file"].as< std::vector< std::string > >();
-        if (vm.count("input-folder")) 
-          m_input_folder_vector = vm["input-folder"].as< std::vector< std::string > >();
-        m_recursive = (vm.count("recursive")) ? true : false;
       }
+
+      /*
+       * Fill in the configuration object with the options parsed
+       */
+      m_config_file = vm["config-file"].as<std::string>();
+      m_database_file = (vm.count("db-file")) ? vm["db-file"].as<std::string>() : "";
+      if (vm.count("input-file")) 
+        m_input_file_vector = vm["input-file"].as< std::vector< std::string > >();
+      if (vm.count("input-folder")) 
+        m_input_folder_vector = vm["input-folder"].as< std::vector< std::string > >();
+      m_recursive = (vm.count("recursive")) ? true : false;
 
     }
     catch(std::exception& e) 

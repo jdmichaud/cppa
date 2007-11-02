@@ -4,6 +4,8 @@
 
 #include "configuration.hpp"
 #include "file_iterator.hpp"
+#include "code_map.hpp"
+#include "parser.hpp"
 
 configuration configuration::m_configuration;
 
@@ -55,6 +57,13 @@ int main(int argc, char **argv)
                    configuration::get_instance().m_input_folder_vector,
                    configuration::get_instance().m_recursive);
 
+  code_map  cm;
+  parser    p;
+  while (*fi != file_iterator::end())
+  {
+    p.parse(*fi, cm);
+    ++fi;
+  }
 
   return 0;
 }
