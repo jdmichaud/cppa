@@ -36,6 +36,7 @@ public:
         ("db-file,d", po::value<std::string>(), "database file where code map shall be injected")
         ("input-folder,f", po::value< std::vector< std::string > >(), "folder containing files to parse")
         ("recursive,r", "recursively parse files in folder")
+        ("delayed-db,d", "delayed the database writing to the end")
     ;
   }
 
@@ -80,17 +81,24 @@ public:
         return false;
       }
 
+      if (!vm.count("db-file") && vm.count("delayed-db"))
+      {
+        BOOST_LOG(BOOST_LOG_MASK_LEVEL_1, 
+                  boost::logging::warning, 
+                  "warning: db write delayed asked but no database file specified");
+      }
+
       /*
        * Fill in the configuration object with the options parsed
        */
       m_config_file = vm["config-file"].as<std::string>();
-      m_database_file = (vm.count("db-file")) ? vm["db-file"].as<std::string>() : "";
+      m_database_file = (vm.count("db-file")) ? vm["db-file"].as<std::string>() : DEFAULT_DB_FILE;
       if (vm.count("input-file")) 
         m_input_file_vector = vm["input-file"].as< std::vector< std::string > >();
       if (vm.count("input-folder")) 
         m_input_folder_vector = vm["input-folder"].as< std::vector< std::string > >();
       m_recursive = (vm.count("recursive")) ? true : false;
-
+      m_delayed_db = (vm.count("delayed-db")) ? true : false;
     }
     catch(std::exception& e) 
     {
@@ -127,6 +135,7 @@ public: // option members
   std::vector<std::string>  m_input_file_vector;
   std::vector<std::string>  m_input_folder_vector;
   bool                      m_recursive;
+  bool                      m_delayed_db;
 };
 
 

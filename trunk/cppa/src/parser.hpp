@@ -23,7 +23,9 @@ private:
 
 public:
 
-  void index_classes(const std::string& file_content, code_map &cm) 
+  void index_classes(const std::string &file_content, 
+                     const std::string &filename,
+                     code_map &cm) 
   { 
     boost::regex class_regex(CLASS_REGEX);
     std::string::const_iterator start, end; 
@@ -38,7 +40,8 @@ public:
       // what[6] contains the template specialisation if any. 
       // add class name and position to map: 
       cm.add_class(std::string(what[5].first, what[5].second),
-                   std::string(what[6].first, what[6].second));
+                   std::string(what[6].first, what[6].second),
+                   filename, what[5].first - file_content.begin());
 
       // update search position: 
       start = what[0].second; 
@@ -77,15 +80,14 @@ public:
     {
       // some preprocessing error
       BOOST_LOG(BOOST_LOG_MASK_LEVEL_1, 
-                boost::logging::error,
-                e.file_name() << "(" << e.line_no() << "): " << e.description() << std::endl);
-      return 2;
+                boost::logging::warning,
+                "warning: " << e.file_name() << "(" << e.line_no() << "): " << e.description() << std::endl);
     }
     catch (std::exception const& e) {
       // use last recognized token to retrieve the error position
       BOOST_LOG(BOOST_LOG_MASK_LEVEL_1, 
                 boost::logging::error,
-                current_position.get_file() << "(" << current_position.get_line() << "): " \
+                "error:" << current_position.get_file() << "(" << current_position.get_line() << "): " \
                 << "exception caught: " << e.what() << std::endl);
         return 3;
     }
@@ -93,12 +95,12 @@ public:
       // use last recognized token to retrieve the error position
       BOOST_LOG(BOOST_LOG_MASK_LEVEL_1, 
                 boost::logging::error,
-                current_position.get_file() << "(" << current_position.get_line() << "): " \
+                "error:" << current_position.get_file() << "(" << current_position.get_line() << "): " \
                 << "unexpected exception caught." << std::endl);
         return 4;
     }
 
-    index_classes(input_stream.str(), cm);
+    index_classes(input_stream.str(), filename, cm);
     return 0;
   }
 };

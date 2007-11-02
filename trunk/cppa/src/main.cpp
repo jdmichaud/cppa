@@ -53,6 +53,8 @@ int main(int argc, char **argv)
     return 1;
   }
 
+  database::get_instance().init(configuration::get_instance().m_database_file);
+
   file_iterator fi(configuration::get_instance().m_input_file_vector,
                    configuration::get_instance().m_input_folder_vector,
                    configuration::get_instance().m_recursive);
@@ -61,6 +63,7 @@ int main(int argc, char **argv)
   parser    p;
   while (*fi != file_iterator::end())
   {
+    std::cout << *fi << std::endl;
     p.parse(*fi, cm);
     ++fi;
   }
