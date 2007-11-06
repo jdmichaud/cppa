@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "configuration.hpp"
 #include "database.hpp"
@@ -11,6 +12,7 @@ class representation
 {
 public:
   virtual int insert_in_database() = 0;
+  virtual std::ostream &print(std::ostream &output) = 0;
 };
 
 class class_repr : public representation
@@ -60,6 +62,16 @@ public:
       BOOST_LOG_L1("class_repr::insert_in_database: Insertion done");
 
     return 0;
+  }
+
+  std::ostream &print(std::ostream &output)
+  {
+    output << "class" << std::endl;
+    output << " name: " << m_class_name << std::endl;
+    output << " template specialisation: " << m_template_specialisation << std::endl;
+    output << " filename: " << m_filename << std::endl;
+    output << " line: " << m_line << std::endl;
+    return output;
   }
 
   std::string m_class_name;
@@ -112,6 +124,18 @@ public:
       BOOST_LOG_L1("var_declr_repr::insert_in_database: Insertion done");
 
     return 0;
+  }
+
+  std::ostream &print(std::ostream &output)
+  {
+    output << "variable" << std::endl;
+    output << " id: " << m_identifier << std::endl;
+    output << " type: " << m_type << std::endl;
+    output << " qualifier: " << m_qualifier << std::endl;
+    output << " nature: " << m_nature << std::endl;
+    output << " filename: " << m_filename << std::endl;
+    output << " line: " << m_line << std::endl;
+    return output;
   }
 
   std::string m_identifier;
