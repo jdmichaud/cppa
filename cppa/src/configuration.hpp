@@ -36,7 +36,8 @@ public:
         ("db-file,d", po::value<std::string>(), "database file where code map shall be injected")
         ("input-folder,f", po::value< std::vector< std::string > >(), "folder containing files to parse")
         ("recursive,r", "recursively parse files in folder")
-        ("delayed-db,d", "delayed the database writing to the end")
+        ("delayed-db,e", "delayed the database writing to the end")
+        ("write-db-for-each-record,w", "write the database each time a regexp is matched")
     ;
   }
 
@@ -99,6 +100,7 @@ public:
         m_input_folder_vector = vm["input-folder"].as< std::vector< std::string > >();
       m_recursive = (vm.count("recursive")) ? true : false;
       m_delayed_db = (vm.count("delayed-db")) ? true : false;
+      m_write_db_by_record = (vm.count("write-db-for-each-record") && !m_delayed_db) ? true : false;
     }
     catch(std::exception& e) 
     {
@@ -136,6 +138,7 @@ public: // option members
   std::vector<std::string>  m_input_folder_vector;
   bool                      m_recursive;
   bool                      m_delayed_db;
+  bool                      m_write_db_by_record;
 };
 
 

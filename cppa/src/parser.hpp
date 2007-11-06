@@ -52,6 +52,49 @@ public:
     } 
   }
 
+  void index_var(const std::string &file_content, 
+                     const std::string &filename,
+                     code_map &cm) 
+  { 
+    boost::regex class_regex(VAR_DECL_REGEX);
+    std::string::const_iterator start, end; 
+    start = file_content.begin(); 
+    end = file_content.end(); 
+    boost::match_results<std::string::const_iterator> what; 
+    boost::match_flag_type flags = boost::match_default; 
+    while(regex_search(start, end, what, class_regex, flags)) 
+    { 
+      // what[0] contains the whole string 
+      // what[4] contains the identifier. 
+      // what[2] contains the type. 
+      // what[5] contains the nature. 
+      // what[1] contains the qualifier. 
+
+      /*
+      std::cout << "0: " << std::string(what[0].first, what[0].second) << std::endl;
+      std::cout << "1: " << std::string(what[1].first, what[1].second) << std::endl;
+      std::cout << "2: " << std::string(what[2].first, what[2].second) << std::endl;
+      std::cout << "3: " << std::string(what[3].first, what[3].second) << std::endl;
+      std::cout << "4: " << std::string(what[4].first, what[4].second) << std::endl;
+      std::cout << "5: " << std::string(what[5].first, what[5].second) << std::endl;
+      std::cout << "6: " << std::string(what[6].first, what[6].second) << std::endl;
+      */
+
+      if (std::string(what[2].first, what[2].second) != "return")
+        cm.add_var(std::string(what[4].first, what[4].second),
+                   std::string(what[2].first, what[2].second),
+                   std::string(what[1].first, what[1].second),
+                   std::string(what[5].first, what[5].second),
+                   filename, what[6].first - file_content.begin());
+
+      // update search position: 
+      start = what[0].second; 
+
+      // update flags: 
+      flags |= boost::match_prev_avail; 
+      flags |= boost::match_not_bob; 
+    } 
+  }
 
   int parse(const std::string &filename, code_map &cm)
   {
@@ -101,6 +144,12 @@ public:
     }
 
     index_classes(input_stream.str(), filename, cm);
+    index_var(input_stream.str(), filename, cm);
+
+    if (!configuration::get_instance().m_write_db_by_record
+        && !configuration::get_instance().m_delayed_db)
+      cm.insert_in_database();
+
     return 0;
   }
 };

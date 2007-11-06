@@ -38,6 +38,12 @@ int database::create_database()
                                                 template_specialisation   varchar,  \
                                                 filename                  varchar,  \
                                                 line                      varchar);", NULL, NULL, NULL);
+  sqlite3_exec(m_database, "CREATE TABLE var (identifier                varchar,  \
+                                              type                      varchar,  \
+                                              qualifier                 varchar,  \
+                                              nature                    varchar,  \
+                                              filename                  varchar,  \
+                                              line                      varchar);", NULL, NULL, NULL);
   return 0;
 }
 
