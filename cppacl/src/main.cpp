@@ -6,13 +6,12 @@
 #include "file_iterator.hpp"
 #include "code_map.hpp"
 #include "code_map_factory.hpp"
-#include "command_line_interpreter.hpp"
 #include "database_explorer.hpp"
+#include "command_handler.hpp"
 
 namespace po = boost::program_options;
 
 configuration configuration::m_configuration;
-boost::cli::commands_description cl_command_desc;
 
 void init_log(const std::string &filename)
 {
@@ -49,51 +48,6 @@ void init_log(const std::string &filename)
   l->add_sink(display_error_sink, display_format);
 }
 
-void help(const std::vector<std::string> &parameters)
-{
-  std::cout << cl_command_desc;
-}
-
-void info(const std::vector<std::string> &parameters)
-{
-  for (std::vector<std::string>::const_iterator it = parameters.begin();
-       it != parameters.end();
-       ++it)
-    std::cout << *it << std::endl;
-}
-
-void exit_(const std::vector<std::string> &)
-{
-  ::exit(0);
-}
-
-void launch_command_line()
-{
-  cl_command_desc.add_options()
-    ("help", po::value< std::vector<std::string> >()->zero_tokens()->notifier(&help), "get help")
-    ("info", po::value< std::vector<std::string> >()->notifier(&info)->multitoken(), "get info on a symbol")
-    ("exit", po::value< std::vector<std::string> >()->zero_tokens()->notifier(&exit_), "exit cppacl")
-    ;
-
-  std::string db_filename = configuration::get_instance().m_database_file;
-  
-  unsigned int pos = db_filename.find_last_of("\\");
-  if (pos == std::string::npos)
-  {
-    pos = db_filename.find_last_of("/");
-    if (pos == std::string::npos)
-      pos = 0;
-    else
-      ++pos;
-  }
-  else
-    ++pos;
-
-  db_filename = db_filename.substr(pos);
-  
-  boost::cli::command_line_interpreter cli(cl_command_desc, db_filename + "> ");
-  cli.interpret(std::cin);
-}
 
 int main(int argc, char **argv)
 {
@@ -107,8 +61,10 @@ int main(int argc, char **argv)
   }
 
   database::get_instance().init(configuration::get_instance().m_database_file, false);
+  
   database_explorer de;
-  launch_command_line();
+  command_handler ch(de);
+  ch.launch_command_line(std::cin);
 
   return 0;
 }

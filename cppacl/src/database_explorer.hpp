@@ -20,6 +20,8 @@ public:
     }
   }
 
+  
+
 private:
   std::vector<class_repr>     m_classes;
   std::vector<var_declr_repr> m_vars;
