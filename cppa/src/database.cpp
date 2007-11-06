@@ -1,14 +1,23 @@
 #include <fstream>
+#include <boost/thread/thread.hpp>
+#include <boost/thread/condition.hpp>
 
 #include "logging.hpp"
 #include "sqlite3.h"
 #include "database.hpp"
 
-database database::m_database_singleton;
+database      database::m_database_singleton;
+boost::mutex	database::m_callback_mutex;
 
-void database::init(const std::string &database_filename)
+void database::init(const std::string &database_filename, bool write)
 {
   std::ifstream datafile(database_filename.c_str());
+  if (!write && !datafile.is_open())
+  {
+    std::exception e("Error reading database");
+    throw e;
+  }
+
   BOOST_LOG_L1("database::init: Checking database (" << database_filename << ") ...");
   if (SQLITE_OK != sqlite3_open(database_filename.c_str(), &m_database))
   {
@@ -18,6 +27,12 @@ void database::init(const std::string &database_filename)
   }
   if (!datafile.is_open())
   {
+    if (!write)
+    {
+      std::exception e("Error reading database");
+      throw e;
+    }
+
     BOOST_LOG_L1("database::init: Database " << database_filename << " does not exist, creating it ...");
     if (create_database())
     {

@@ -1,7 +1,7 @@
 #ifndef _DEFINES_H_
 #define _DEFINES_H_
 
-#define VERSION         "0.0.1"
+#define VERSION         "0.0.3"
 
 #define DEFAULT_DB_FILE "output.db"
 

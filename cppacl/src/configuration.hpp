@@ -31,13 +31,9 @@ public:
     m_option_desc->add_options()
         ("help,h", "display help message")
         ("version,v", "display version")
-        ("config-file,c", po::value<std::string>()->default_value("cppa.rc"), "specify the configuration file")
-        ("input-file,i", po::value< std::vector< std::string > >(), "c++ header and/or source file(s) to parse")
-        ("db-file,d", po::value<std::string>(), "database file where code map shall be injected")
-        ("input-folder,f", po::value< std::vector< std::string > >(), "folder containing files to parse")
-        ("recursive,r", "recursively parse files in folder")
-        ("delayed-db,e", "delayed the database writing to the end")
-        ("write-db-for-each-record,w", "write the database each time a regexp is matched")
+        ("config-file,c", po::value<std::string>()->default_value("cppacl.rc"), "specify the configuration file")
+        ("db-file,d", po::value<std::string>(), "database file")
+        ("load-file,l", "load database file at start (long to start, but fast to use)")
     ;
   }
 
@@ -64,29 +60,12 @@ public:
       if (vm.count("help")) // display help and quit
         return false;
 
-      if (!vm.count("input-file") && !vm.count("input-folder"))
-      // We are not displaying version nor help? Well we need a file to parse!
+      if (!vm.count("db-file"))
       {
         BOOST_LOG(BOOST_LOG_MASK_LEVEL_1, 
                   boost::logging::error, 
-                  "error: no input file or folder");
+                  "error: please specify a database file");
         return false;
-      }
-
-      if (!vm.count("input-folder") && vm.count("recursive"))
-      // Recursive option set, but no folder!?
-      {
-        BOOST_LOG(BOOST_LOG_MASK_LEVEL_1, 
-                  boost::logging::error, 
-                  "error: the recursive option shall be used when (a) folder(s) is/are specified");
-        return false;
-      }
-
-      if (!vm.count("db-file") && vm.count("delayed-db"))
-      {
-        BOOST_LOG(BOOST_LOG_MASK_LEVEL_1, 
-                  boost::logging::warning, 
-                  "warning: db write delayed asked but no database file specified");
       }
 
       /*
@@ -94,13 +73,7 @@ public:
        */
       m_config_file = vm["config-file"].as<std::string>();
       m_database_file = (vm.count("db-file")) ? vm["db-file"].as<std::string>() : DEFAULT_DB_FILE;
-      if (vm.count("input-file")) 
-        m_input_file_vector = vm["input-file"].as< std::vector< std::string > >();
-      if (vm.count("input-folder")) 
-        m_input_folder_vector = vm["input-folder"].as< std::vector< std::string > >();
-      m_recursive = (vm.count("recursive")) ? true : false;
-      m_delayed_db = (vm.count("delayed-db")) ? true : false;
-      m_write_db_by_record = (vm.count("write-db-for-each-record") && !m_delayed_db) ? true : false;
+      m_load_at_startup = (vm.count("load-file")) ? true : false;
       return true;
     }
     catch(std::exception& e) 
@@ -135,11 +108,7 @@ private:
 public: // option members
   std::string               m_config_file;
   std::string               m_database_file;
-  std::vector<std::string>  m_input_file_vector;
-  std::vector<std::string>  m_input_folder_vector;
-  bool                      m_recursive;
-  bool                      m_delayed_db;
-  bool                      m_write_db_by_record;
+  bool                      m_load_at_startup;
 };
 
 
