@@ -20,13 +20,19 @@ class ouch1 : private aie(MACRO) {};
 
 class ouch2 : private aie(MACRO), public oula {};
 
-class ouch3 : private aie(MACRO),
+class ouch3 : private aie(param1, param2),
               public oula
 {
 };
 
 class ouch4 : private aie(MACRO), // commentaire a la con
               public oula
+{
+};
+
+template<typename T>
+class ouch5 : private aie<T>(MACRO), // commentaire a la con
+              public oula<int>
 {
 };
 

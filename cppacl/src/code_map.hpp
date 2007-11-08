@@ -52,6 +52,8 @@ public:
   std::string m_filename;
   unsigned long m_line;
 
+  std::list<class_repr *> m_parents;
+  std::list<class_repr *> m_children;
 };
 
 class var_declr_repr : public representation
