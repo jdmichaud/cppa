@@ -23,6 +23,42 @@ private:
 
 public:
 
+  void parse_parents(const std::string &str,
+                     std::vector<std::string> parents)
+  {
+    boost::regex class_regex(PARENT_CLASS_REGEX);
+    std::string::const_iterator start, end; 
+    start = str.begin(); 
+    end = str.end(); 
+    boost::match_results<std::string::const_iterator> what; 
+    boost::match_flag_type flags = boost::match_default;
+    std::cout << "str : " << str << std::endl;
+    while(regex_search(start, end, what, class_regex, flags)) 
+    { 
+      /*
+       * what[0] contains the whole string
+       * what[1] contains the qualifier (public or private)
+       * what[1] contains the parent class identifier
+       * what[2] contains the constructor parameters
+       */
+
+      std::cout << "0: " << std::string(what[0].first, what[0].second) << std::endl;
+      std::cout << "1: " << std::string(what[1].first, what[1].second) << std::endl;
+      std::cout << "2: " << std::string(what[2].first, what[2].second) << std::endl;
+      std::cout << "3: " << std::string(what[3].first, what[3].second) << std::endl;
+      std::cout << "4: " << std::string(what[4].first, what[4].second) << std::endl;
+      std::cout << "5: " << std::string(what[5].first, what[5].second) << std::endl;
+      std::cout << "6: " << std::string(what[6].first, what[6].second) << std::endl;
+
+      // update search position: 
+      start = what[0].second; 
+
+      // update flags: 
+      flags |= boost::match_prev_avail; 
+      flags |= boost::match_not_bob; 
+    } 
+  }
+
   void index_classes(const std::string &file_content, 
                      const std::string &filename,
                      code_map &cm) 
@@ -36,9 +72,28 @@ public:
     while(regex_search(start, end, what, class_regex, flags)) 
     { 
       // what[0] contains the whole string 
+      // what[1] conttains the template specialisation if any. 
       // what[5] contains the class name. 
-      // what[6] contains the template specialisation if any. 
+      // what[7] contains the parent classes (" : private something(else) {")
       // add class name and position to map: 
+
+      /*
+      std::cout << "0: " << std::string(what[0].first, what[0].second) << std::endl;
+      std::cout << "1: " << std::string(what[1].first, what[1].second) << std::endl;
+      std::cout << "2: " << std::string(what[2].first, what[2].second) << std::endl;
+      std::cout << "3: " << std::string(what[3].first, what[3].second) << std::endl;
+      std::cout << "4: " << std::string(what[4].first, what[4].second) << std::endl;
+      std::cout << "5: " << std::string(what[5].first, what[5].second) << std::endl;
+      std::cout << "6: " << std::string(what[6].first, what[6].second) << std::endl;
+      std::cout << "7: " << std::string(what[7].first, what[7].second) << std::endl;
+      std::cout << "8: " << std::string(what[8].first, what[8].second) << std::endl;
+      std::cout << "9: " << std::string(what[9].first, what[9].second) << std::endl;
+      */
+
+      std::vector<std::string> parent_class;
+      parse_parents(std::string(what[7].first, what[7].second),
+                    parent_class);
+
       cm.add_class(std::string(what[5].first, what[5].second),
                    std::string(what[3].first, what[3].second),
                    filename, what[5].first - file_content.begin());
