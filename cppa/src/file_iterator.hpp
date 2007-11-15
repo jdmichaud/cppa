@@ -25,7 +25,7 @@ public:
     if (m_files.empty())
     {
       if (m_folders.empty())
-        throw std::exception("no file or folder to iterate");
+        throw "no file or folder to iterate";
 
     }
     else
