@@ -13,10 +13,7 @@ void database::init(const std::string &database_filename, bool write)
 {
   std::ifstream datafile(database_filename.c_str());
   if (!write && !datafile.is_open())
-  {
-    std::exception e("Error reading database");
-    throw e;
-  }
+    throw "Error reading database";
 
   BOOST_LOG_L1("database::init: Checking database (" << database_filename << ") ...");
   if (SQLITE_OK != sqlite3_open(database_filename.c_str(), &m_database))
@@ -28,18 +25,14 @@ void database::init(const std::string &database_filename, bool write)
   if (!datafile.is_open())
   {
     if (!write)
-    {
-      std::exception e("Error reading database");
-      throw e;
-    }
+      throw "Error reading database";
 
     BOOST_LOG_L1("database::init: Database " << database_filename << " does not exist, creating it ...");
     if (create_database())
     {
       BOOST_LOG(BOOST_LOG_MASK_LEVEL_1, 
         boost::logging::error, "error creating database");
-      std::exception e("Error creating database");
-      throw e;
+      throw "Error creating database";
     }
   }
   else
