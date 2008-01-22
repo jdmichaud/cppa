@@ -82,7 +82,9 @@ public:
       {
         if (!fs::exists(m_folders[m_folder_index])) 
         {
-          BOOST_LOG(BOOST_LOG_MASK_LEVEL_1, boost::logging::warning, "warning: " << m_folders[m_folder_index] << " unknown folder");
+          LOGLITE_LOG(LOGLITE_MASK_LEVEL_1, 
+                      loglite::warning, 
+                      "warning: " << m_folders[m_folder_index] << " unknown folder");
           continue ;
         }
         fs::directory_iterator end_itr; // default construction yields past-the-end

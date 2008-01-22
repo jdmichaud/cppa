@@ -15,11 +15,11 @@ void database::init(const std::string &database_filename, bool write)
   if (!write && !datafile.is_open())
     throw "Error reading database";
 
-  BOOST_LOG_L1("database::init: Checking database (" << database_filename << ") ...");
+  LOGLITE_LOG_L1("database::init: Checking database (" << database_filename << ") ...");
   if (SQLITE_OK != sqlite3_open(database_filename.c_str(), &m_database))
   {
-    BOOST_LOG(BOOST_LOG_MASK_LEVEL_1, 
-      boost::logging::error, "error:" << sqlite3_errmsg(m_database));
+    LOGLITE_LOG(LOGLITE_MASK_LEVEL_1, 
+      loglite::error, "error:" << sqlite3_errmsg(m_database));
     return ;
   }
   if (!datafile.is_open())
@@ -27,16 +27,16 @@ void database::init(const std::string &database_filename, bool write)
     if (!write)
       throw "Error reading database";
 
-    BOOST_LOG_L1("database::init: Database " << database_filename << " does not exist, creating it ...");
+    LOGLITE_LOG_L1("database::init: Database " << database_filename << " does not exist, creating it ...");
     if (create_database())
     {
-      BOOST_LOG(BOOST_LOG_MASK_LEVEL_1, 
-        boost::logging::error, "error creating database");
+      LOGLITE_LOG(LOGLITE_MASK_LEVEL_1, 
+        loglite::error, "error creating database");
       throw "Error creating database";
     }
   }
   else
-    BOOST_LOG_L1("database::init: Database " << database_filename << " exists");
+    LOGLITE_LOG_L1("database::init: Database " << database_filename << " exists");
 }
 
 int database::create_database()

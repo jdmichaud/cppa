@@ -39,7 +39,7 @@ public:
 
   bool parse_option(int argc, char **argv)
   {
-    BOOST_LOG_L1("parse_option: argc " << argc << " argv " << argv);
+    LOGLITE_LOG_L1("parse_option: argc " << argc << " argv " << argv);
     static boost::program_options::variables_map vm;
 
     try 
@@ -62,8 +62,8 @@ public:
 
       if (!vm.count("db-file"))
       {
-        BOOST_LOG(BOOST_LOG_MASK_LEVEL_1, 
-                  boost::logging::error, 
+        LOGLITE_LOG(LOGLITE_MASK_LEVEL_1, 
+                  loglite::error, 
                   "error: please specify a database file");
         return false;
       }
@@ -78,16 +78,16 @@ public:
     }
     catch(std::exception& e) 
     {
-      BOOST_LOG(BOOST_LOG_MASK_LEVEL_1, 
-                boost::logging::error, 
+      LOGLITE_LOG(LOGLITE_MASK_LEVEL_1, 
+                loglite::error, 
                 "error: " << e.what());
       return false;
     }
 #ifndef _DEBUG
     catch(...) 
     {
-      BOOST_LOG(BOOST_LOG_MASK_LEVEL_1, 
-                boost::logging::error, 
+      LOGLITE_LOG(LOGLITE_MASK_LEVEL_1, 
+                loglite::error, 
                 "error: Exception of unknown type!");
       return false;
     }

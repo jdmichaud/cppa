@@ -7,6 +7,8 @@
 
 #include <boost/bind.hpp>
 
+#include <editline/readline.h>
+
 #include "database_explorer.hpp"
 #include "command_line_interpreter.hpp"
 
@@ -32,7 +34,23 @@ public:
     for (std::vector<std::string>::const_iterator it = parameters.begin();
          it != parameters.end();
          ++it)
-      std::cout << *it << std::endl;
+    {
+      std::string class_output;
+      int class_found = m_database_explorer.get_info_on_class(*it, class_output);
+      std::string vars_output;
+      int vars_found  = m_database_explorer.get_info_on_var(*it, vars_output);
+
+      if (!class_found && !vars_found)
+      {
+        std::cout << class_output << std::endl;
+        std::cout << vars_output << std::endl;
+      }
+
+      if (class_found)
+        std::cout << class_output << std::endl;
+      if (vars_found)
+        std::cout << vars_output << std::endl;
+    }
   }
 
   void exit(const std::vector<std::string> &)
@@ -59,7 +77,7 @@ public:
     db_filename = db_filename.substr(pos);
     
     boost::cli::command_line_interpreter cli(m_command_desc, db_filename + "> ");
-    cli.interpret(input);
+    cli.interpret_(input, &readline);
   }
 
 private:

@@ -1,25 +1,28 @@
 CC	= g++
 LD	= g++
-CFOLDER	= u:/c++/
+CFOLDER	= /home/michaudjd/c++/
 SRCDIR	= ../src
-BOOST	= c:/boost/boost_1_34_1
+BOOST	= /home/michaudjd/lib/boost-trunk/
 INCLUDE = -I$(SRCDIR)	\
 	-I$(BOOST)	\
-	-I$(CFOLDER)/logging/
+	-I$(CFOLDER)/loglite/
 SRC	= $(SRCDIR)/database.cpp	\
 	$(SRCDIR)/main.cpp
 OBJ	= database.o main.o
 OUTPUT	= cppa
 LIBDIR	= $(BOOST)/stage/lib
-LIB	= -lboost_filesystem-gcc42-mt-d		\
-	-lboost_wave-gcc42-mt-d			\
-	-lboost_thread-gcc42-mt-d		\
-	-lboost_program_options-gcc42-mt-d	\
-	-lboost_regex-gcc42-mt-d		\
-	-lboost_date_time-gcc42-mt-d
+LIB	= -lboost_filesystem-gcc40-mt-d		\
+	-lboost_wave-gcc40-mt-d			\
+	-lboost_thread-gcc40-mt-d		\
+	-lboost_program_options-gcc40-mt-d	\
+	-lboost_regex-gcc40-mt-d		\
+	-lboost_date_time-gcc40-mt-d \
+	-lboost_system-gcc40-mt-d \
+	-pthread \
+	-ldl
 
 
-CFLAGS	= -ggdb3 $(INCLUDE)
+CFLAGS	= -ggdb3 $(INCLUDE) -D_DEBUG
 LDFLAGS	= -L$(LIBDIR) -static
 
 all: $(OUTPUT)
