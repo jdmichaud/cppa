@@ -8,6 +8,7 @@
 #include "code_map_factory.hpp"
 #include "database_explorer.hpp"
 #include "command_handler.hpp"
+#include "database.hpp"
 
 namespace po = boost::program_options;
 
@@ -15,44 +16,44 @@ configuration configuration::m_configuration;
 
 void init_log(const std::string &filename)
 {
-  boost::logging::logger *l = boost::logging::logger::get_instance();
+  loglite::logger_p l = loglite::logger::get_instance();
 
-  boost::logging::format display_format(boost::logging::trace >> boost::logging::eol);
+  loglite::format display_format(loglite::trace >> loglite::eol);
   l->add_format(display_format);
 
 #ifdef _DEBUG
-  boost::logging::format file_format("[" >> boost::logging::mask >> "],"
-                                         >> boost::logging::filename >> "("
-                                         >> boost::logging::line >> "),"
-                                         >> boost::logging::time >> ", "
-                                         >> boost::logging::trace
-                                         >> boost::logging::eol); // log format
+  loglite::format file_format("[" >> loglite::mask >> "],"
+                                  >> loglite::filename >> "("
+                                  >> loglite::line >> "),"
+                                  >> loglite::time >> ", "
+                                  >> loglite::trace
+                                  >> loglite::eol); // log format
   l->add_format(file_format);
 
-  boost::logging::sink file_sink(new std::ofstream(filename.c_str(), 
-                                                   std::ios_base::app), 
-                                 BOOST_LOG_MASK_LEVEL_3);
-  file_sink.attach_qualifier(boost::logging::log);
-  file_sink.attach_qualifier(boost::logging::warning);
-  file_sink.attach_qualifier(boost::logging::error);
+  loglite::sink file_sink(new std::ofstream(filename.c_str(), 
+                                            std::ios_base::app), 
+                                 LOGLITE_MASK_LEVEL_3);
+  file_sink.attach_qualifier(loglite::log);
+  file_sink.attach_qualifier(loglite::warning);
+  file_sink.attach_qualifier(loglite::error);
   l->add_sink(file_sink, file_format);
 #endif
 
-  boost::logging::sink display_sink(&std::cout, BOOST_LOG_MASK_LEVEL_1);
-  display_sink.attach_qualifier(boost::logging::warning);
-  display_sink.attach_qualifier(boost::logging::notice);
+  loglite::sink display_sink(&std::cout, LOGLITE_MASK_LEVEL_1);
+  display_sink.attach_qualifier(loglite::warning);
+  display_sink.attach_qualifier(loglite::notice);
   l->add_sink(display_sink, display_format);
 
-  boost::logging::sink display_error_sink(&std::cerr, BOOST_LOG_MASK_LEVEL_1);
-  display_error_sink.attach_qualifier(boost::logging::error);
+  loglite::sink display_error_sink(&std::cerr, LOGLITE_MASK_LEVEL_1);
+  display_error_sink.attach_qualifier(loglite::error);
   l->add_sink(display_error_sink, display_format);
 }
 
 
 int main(int argc, char **argv)
 {
-  init_log("output.log");
-  BOOST_LOG_L1("cppacl up");
+  init_log("cppacl.log");
+  LOGLITE_LOG_L1("cppacl up");
   
   if (!configuration::get_instance().parse_option(argc, argv))
   {

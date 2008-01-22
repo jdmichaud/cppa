@@ -48,18 +48,18 @@ public:
     query << "'" << m_filename << "', ";
     query << "'" << m_line << "');";
 
-    BOOST_LOG_L1("class_repr::insert_in_database: query -->");
-    BOOST_LOG_L4(query.str());
+    LOGLITE_LOG_L1("class_repr::insert_in_database: query -->");
+    LOGLITE_LOG_L4(query.str());
 
     if (SQLITE_OK != database::get_instance().execute(query.str()))
     {
-      BOOST_LOG(BOOST_LOG_MASK_LEVEL_1, 
-        boost::logging::error, 
+      LOGLITE_LOG(LOGLITE_MASK_LEVEL_1, 
+        loglite::error, 
         "class_repr::insert_in_database: Insertion failed: " << database::get_instance().get_last_error());
       return -1;
     }
     else
-      BOOST_LOG_L1("class_repr::insert_in_database: Insertion done");
+      LOGLITE_LOG_L1("class_repr::insert_in_database: Insertion done");
 
     return 0;
   }
@@ -110,18 +110,18 @@ public:
     query << "'" << m_filename << "', ";
     query << "'" << m_line << "');";
 
-    BOOST_LOG_L1("var_declr_repr::insert_in_database: query -->");
-    BOOST_LOG_L4(query.str());
+    LOGLITE_LOG_L1("var_declr_repr::insert_in_database: query -->");
+    LOGLITE_LOG_L4(query.str());
 
     if (SQLITE_OK != database::get_instance().execute(query.str()))
     {
-      BOOST_LOG(BOOST_LOG_MASK_LEVEL_1, 
-        boost::logging::error, 
+      LOGLITE_LOG(LOGLITE_MASK_LEVEL_1, 
+        loglite::error, 
         "var_declr_repr::insert_in_database: Insertion failed: " << database::get_instance().get_last_error());
       return -1;
     }
     else
-      BOOST_LOG_L1("var_declr_repr::insert_in_database: Insertion done");
+      LOGLITE_LOG_L1("var_declr_repr::insert_in_database: Insertion done");
 
     return 0;
   }
@@ -180,7 +180,7 @@ public:
 
   void insert_in_database()
   {
-    BOOST_LOG_L2("writing database...");
+    LOGLITE_LOG_L2("writing database...");
     
     database::get_instance().execute("BEGIN TRANSACTION;");
     for (unsigned int i = 0; i < m_class_vector.size(); ++i)

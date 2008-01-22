@@ -43,7 +43,7 @@ public:
 
   bool parse_option(int argc, char **argv)
   {
-    BOOST_LOG_L1("parse_option: argc " << argc << " argv " << argv);
+    LOGLITE_LOG_L1("parse_option: argc " << argc << " argv " << argv);
     static boost::program_options::variables_map vm;
 
     try 
@@ -67,26 +67,26 @@ public:
       if (!vm.count("input-file") && !vm.count("input-folder"))
       // We are not displaying version nor help? Well we need a file to parse!
       {
-        BOOST_LOG(BOOST_LOG_MASK_LEVEL_1, 
-                  boost::logging::error, 
-                  "error: no input file or folder");
+        LOGLITE_LOG(LOGLITE_MASK_LEVEL_1, 
+                    loglite::error, 
+                    "error: no input file or folder");
         return false;
       }
 
       if (!vm.count("input-folder") && vm.count("recursive"))
       // Recursive option set, but no folder!?
       {
-        BOOST_LOG(BOOST_LOG_MASK_LEVEL_1, 
-                  boost::logging::error, 
-                  "error: the recursive option shall be used when (a) folder(s) is/are specified");
+        LOGLITE_LOG(LOGLITE_MASK_LEVEL_1, 
+                    loglite::error, 
+                    "error: the recursive option shall be used when (a) folder(s) is/are specified");
         return false;
       }
 
       if (!vm.count("db-file") && vm.count("delayed-db"))
       {
-        BOOST_LOG(BOOST_LOG_MASK_LEVEL_1, 
-                  boost::logging::warning, 
-                  "warning: db write delayed asked but no database file specified");
+        LOGLITE_LOG(LOGLITE_MASK_LEVEL_1, 
+                    loglite::warning, 
+                    "warning: db write delayed asked but no database file specified");
       }
 
       /*
@@ -105,17 +105,17 @@ public:
     }
     catch(std::exception& e) 
     {
-      BOOST_LOG(BOOST_LOG_MASK_LEVEL_1, 
-                boost::logging::error, 
-                "error: " << e.what());
+      LOGLITE_LOG(LOGLITE_MASK_LEVEL_1, 
+                  loglite::error, 
+                  "error: " << e.what());
       return false;
     }
 #ifndef _DEBUG
     catch(...) 
     {
-      BOOST_LOG(BOOST_LOG_MASK_LEVEL_1, 
-                boost::logging::error, 
-                "error: Exception of unknown type!");
+      LOGLITE_LOG(LOGLITE_MASK_LEVEL_1, 
+                  loglite::error, 
+                  "error: Exception of unknown type!");
       return false;
     }
 #endif

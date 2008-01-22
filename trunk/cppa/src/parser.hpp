@@ -32,7 +32,7 @@ public:
     end = str.end(); 
     boost::match_results<std::string::const_iterator> what; 
     boost::match_flag_type flags = boost::match_default;
-    std::cout << "str : " << str << std::endl;
+    //std::cout << "str : " << str << std::endl;
     while(regex_search(start, end, what, class_regex, flags)) 
     { 
       /*
@@ -42,6 +42,7 @@ public:
        * what[2] contains the constructor parameters
        */
 
+      /*
       std::cout << "0: " << std::string(what[0].first, what[0].second) << std::endl;
       std::cout << "1: " << std::string(what[1].first, what[1].second) << std::endl;
       std::cout << "2: " << std::string(what[2].first, what[2].second) << std::endl;
@@ -49,7 +50,7 @@ public:
       std::cout << "4: " << std::string(what[4].first, what[4].second) << std::endl;
       std::cout << "5: " << std::string(what[5].first, what[5].second) << std::endl;
       std::cout << "6: " << std::string(what[6].first, what[6].second) << std::endl;
-
+      */
       // update search position: 
       start = what[0].second; 
 
@@ -153,7 +154,7 @@ public:
 
   int parse(const std::string &filename, code_map &cm)
   {
-    BOOST_LOG_L1("parsing " << filename);
+    LOGLITE_LOG_L1("parsing " << filename);
     boost::wave::util::file_position_type current_position;
     std::ifstream input_file(filename.c_str());
     std::string input(
@@ -177,24 +178,24 @@ public:
     catch (boost::wave::cpp_exception const& e) 
     {
       // some preprocessing error
-      BOOST_LOG(BOOST_LOG_MASK_LEVEL_1, 
-                boost::logging::warning,
-                "warning: " << e.file_name() << "(" << e.line_no() << "): " << e.description() << std::endl);
+      LOGLITE_LOG(LOGLITE_MASK_LEVEL_1, 
+                  loglite::warning,
+                  "warning: " << e.file_name() << "(" << e.line_no() << "): " << e.description());
     }
     catch (std::exception const& e) {
       // use last recognized token to retrieve the error position
-      BOOST_LOG(BOOST_LOG_MASK_LEVEL_1, 
-                boost::logging::error,
-                "error:" << current_position.get_file() << "(" << current_position.get_line() << "): " \
-                << "exception caught: " << e.what() << std::endl);
+      LOGLITE_LOG(LOGLITE_MASK_LEVEL_1, 
+                  loglite::error,
+                  "error:" << current_position.get_file() << "(" << current_position.get_line() << "): " \
+                           << "exception caught: " << e.what());
         return 3;
     }
     catch (...) {
       // use last recognized token to retrieve the error position
-      BOOST_LOG(BOOST_LOG_MASK_LEVEL_1, 
-                boost::logging::error,
-                "error:" << current_position.get_file() << "(" << current_position.get_line() << "): " \
-                << "unexpected exception caught." << std::endl);
+      LOGLITE_LOG(LOGLITE_MASK_LEVEL_1, 
+                  loglite::error,
+                  "error:" << current_position.get_file() << "(" << current_position.get_line() << "): " \
+                           << "unexpected exception caught.");
         return 4;
     }
 

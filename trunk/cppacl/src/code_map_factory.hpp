@@ -15,15 +15,15 @@ public:
     std::ostringstream query;
 
     query << "SELECT identifier, template_specialisation, filename, line FROM class;";
-    BOOST_LOG_L1("class_factory::extract_classes: query -->");
-    BOOST_LOG_L1(query.str());
+    LOGLITE_LOG_L1("class_factory::extract_classes: query -->");
+    LOGLITE_LOG_L1(query.str());
 
     database::query_result_t result;
     if (SQLITE_OK != database::get_instance().execute(query.str(), database::generic_callback, &result, NULL))
     {
-      BOOST_LOG(BOOST_LOG_MASK_LEVEL_1, 
-                boost::logging::error, 
-                "class_factory::extract_classes: query failed: " << database::get_instance().get_last_error());
+      LOGLITE_LOG(LOGLITE_MASK_LEVEL_1, 
+                  loglite::error, 
+                  "class_factory::extract_classes: query failed: " << database::get_instance().get_last_error());
       return -1;      
     }
     
@@ -37,6 +37,34 @@ public:
 
     return 0;
   }
+
+  int get_class(std::string id, std::vector<class_repr> &classes)
+  {
+    std::ostringstream query;
+
+    query << "SELECT identifier, template_specialisation, filename, line FROM class WHERE identifier = \"" << id << "\" ;";
+    LOGLITE_LOG_L1("class_factory::get_class: query -->");
+    LOGLITE_LOG_L1(query.str());
+    
+    database::query_result_t result;
+    if (SQLITE_OK != database::get_instance().execute(query.str(), database::generic_callback, &result, NULL))
+    {
+      LOGLITE_LOG(LOGLITE_MASK_LEVEL_1, 
+                  loglite::error, 
+                  "var_factory::get_class: query failed: " << database::get_instance().get_last_error());
+      return -1;      
+    }
+
+    for (unsigned int i = 0; i < result["identifier"].size(); ++i)
+    {
+      classes.push_back(class_repr(result["identifier"][i],
+                                   result["template_specialisation"][i],
+                                   result["filename"][i],
+                                   ::atoi(result["line"][i].c_str())));
+    }
+    
+    return 0;
+  }
 };
 
 class var_factory
@@ -46,16 +74,16 @@ public:
   {
     std::ostringstream query;
 
-    query << "SELECT identifier, type, qualifier, nature, filename, line FROM variable;";
-    BOOST_LOG_L1("var_factory::extract_variables: query -->");
-    BOOST_LOG_L1(query.str());
+    query << "SELECT identifier, type, qualifier, nature, filename, line FROM var;";
+    LOGLITE_LOG_L1("var_factory::extract_variables: query -->");
+    LOGLITE_LOG_L1(query.str());
 
     database::query_result_t result;
     if (SQLITE_OK != database::get_instance().execute(query.str(), database::generic_callback, &result, NULL))
     {
-      BOOST_LOG(BOOST_LOG_MASK_LEVEL_1, 
-                boost::logging::error, 
-                "var_factory::extract_variables: query failed: " << database::get_instance().get_last_error());
+      LOGLITE_LOG(LOGLITE_MASK_LEVEL_1, 
+                  loglite::error, 
+                  "var_factory::extract_variables: query failed: " << database::get_instance().get_last_error());
       return -1;      
     }
 
@@ -69,6 +97,36 @@ public:
                                     ::atoi(result["line"][i].c_str())));
     }
 
+    return 0;
+  }
+
+  int get_var(std::string id, std::vector<var_declr_repr> &vars)
+  {
+    std::ostringstream query;
+
+    query << "SELECT identifier, type, qualifier, nature, filename, line FROM var WHERE identifier = \"" << id << "\" ;";
+    LOGLITE_LOG_L1("var_factory::get_var: query -->");
+    LOGLITE_LOG_L1(query.str());
+    
+    database::query_result_t result;
+    if (SQLITE_OK != database::get_instance().execute(query.str(), database::generic_callback, &result, NULL))
+    {
+      LOGLITE_LOG(LOGLITE_MASK_LEVEL_1, 
+                  loglite::error, 
+                  "var_factory::get_var: query failed: " << database::get_instance().get_last_error());
+      return -1;      
+    }
+
+    for (unsigned int i = 0; i < result["identifier"].size(); ++i)
+    {
+      vars.push_back(var_declr_repr(result["identifier"][i],
+                                    result["type"][i],
+                                    result["nature"][i],
+                                    result["qualifier"][i],
+                                    result["filename"][i],
+                                    ::atoi(result["line"][i].c_str())));
+    }
+    
     return 0;
   }
 };
