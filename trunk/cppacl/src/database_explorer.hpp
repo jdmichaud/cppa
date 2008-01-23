@@ -11,52 +11,32 @@ class database_explorer
 public:
   database_explorer() 
   {
-    m_loaded = false;
-    if (configuration::get_instance().m_load_at_startup)
-    {
-      class_factory cf;
-      cf.extract_classes(m_classes);
-      LOGLITE_LOG(LOGLITE_MASK_LEVEL_1, 
-                  loglite::notice, m_classes.size() << " classes loaded.");
+    class_factory cf;
+    cf.extract_classes(m_classes);
+    LOGLITE_LOG(LOGLITE_MASK_LEVEL_1, 
+                loglite::notice, m_classes.size() << " classes loaded.");
 
-      var_factory vf;
-      vf.extract_variables(m_vars);
-      LOGLITE_LOG(LOGLITE_MASK_LEVEL_1, 
-                  loglite::notice, m_vars.size() << " variables loaded.");
-
-      m_loaded = true;
-    }
+    var_factory vf;
+    vf.extract_variables(m_vars);
+    LOGLITE_LOG(LOGLITE_MASK_LEVEL_1, 
+                loglite::notice, m_vars.size() << " variables loaded.");
   }
 
   int get_class(std::string id, std::vector<class_repr>& classes)
   {
-    if (m_loaded)
-    {
-      for (unsigned int i = 0; i < m_classes.size(); ++i)
-        if (m_classes[i].m_class_name == id)
-          classes.push_back(m_classes[i]);
-    }
-    else
-    {
-      class_factory cf;
-      return cf.get_class(id, classes);
-    }
+    for (unsigned int i = 0; i < m_classes.size(); ++i)
+      if (m_classes[i].m_class_name == id)
+        classes.push_back(m_classes[i]);
+
     return 0;
   }
 
   int get_var(std::string id, std::vector<var_declr_repr>& vars)
   {
-    if (m_loaded)
-    {
-      for (unsigned int i = 0; i < m_vars.size(); ++i)
-        if (m_vars[i].m_identifier == id)
-          vars.push_back(m_vars[i]);
-    }
-    else
-    {
-      var_factory vf;
-      return vf.get_var(id, vars);
-    }
+    for (unsigned int i = 0; i < m_vars.size(); ++i)
+      if (m_vars[i].m_identifier == id)
+        vars.push_back(m_vars[i]);
+
     return 0;
   }
 
@@ -130,6 +110,20 @@ public:
     return vars.size();
   }
 
+  int get_class_id_starts_with(const char *c, std::vector<std::string> &ids)
+  {
+    for (unsigned int i = 0; i < m_classes.size(); ++i)
+      if (m_classes[i].m_class_name.find(c) == 0)
+        ids.push_back(m_classes[i].m_class_name);
+  }
+
+  int get_var_id_starts_with(const char *c, std::vector<std::string> &ids)
+  {
+    for (unsigned int i = 0; i < m_classes.size(); ++i)
+      if (m_vars[i].m_identifier.find(c) == 0)
+        ids.push_back(m_vars[i].m_identifier);
+  }
+  
 private:
   std::vector<class_repr>     m_classes;
   std::vector<var_declr_repr> m_vars;

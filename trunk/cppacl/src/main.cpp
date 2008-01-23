@@ -23,7 +23,7 @@ void init_log(const std::string &filename)
 
 #ifdef _DEBUG
   loglite::format file_format("[" >> loglite::mask >> "],"
-                                  >> loglite::filename >> "("
+                                  >> (*new loglite::filename_element(loglite::filename_element::filename_only)) >> "("
                                   >> loglite::line >> "),"
                                   >> loglite::time >> ", "
                                   >> loglite::trace
