@@ -14,7 +14,7 @@ public:
   {
     std::ostringstream query;
 
-    query << "SELECT identifier, template_specialisation, filename, line FROM class;";
+    query << "SELECT identifier, template_specialisation, parent_class, filename, line FROM class;";
     LOGLITE_LOG_L1("class_factory::extract_classes: query -->");
     LOGLITE_LOG_L1(query.str());
 
@@ -31,6 +31,7 @@ public:
     {
       classes.push_back(class_repr(result["identifier"][i],
                                    result["template_specialisation"][i],
+                                   result["parent_class"][i],
                                    result["filename"][i],
                                    ::atoi(result["line"][i].c_str())));
     }
@@ -42,7 +43,7 @@ public:
   {
     std::ostringstream query;
 
-    query << "SELECT identifier, template_specialisation, filename, line FROM class WHERE identifier = \"" << id << "\" ;";
+    query << "SELECT identifier, template_specialisation, parent_class, filename, line FROM class WHERE identifier = \"" << id << "\" ;";
     LOGLITE_LOG_L1("class_factory::get_class: query -->");
     LOGLITE_LOG_L1(query.str());
     
@@ -59,6 +60,7 @@ public:
     {
       classes.push_back(class_repr(result["identifier"][i],
                                    result["template_specialisation"][i],
+                                   result["parent_class"][i],
                                    result["filename"][i],
                                    ::atoi(result["line"][i].c_str())));
     }

@@ -24,7 +24,7 @@ private:
 public:
 
   void parse_parents(const std::string &str,
-                     std::vector<std::string> parents)
+                     std::vector<std::string>& parents)
   {
     boost::regex class_regex(PARENT_CLASS_REGEX);
     std::string::const_iterator start, end; 
@@ -33,7 +33,7 @@ public:
     boost::match_results<std::string::const_iterator> what; 
     boost::match_flag_type flags = boost::match_default;
     //std::cout << "str : " << str << std::endl;
-    while(regex_search(start, end, what, class_regex, flags)) 
+    while (regex_search(start, end, what, class_regex, flags)) 
     { 
       /*
        * what[0] contains the whole string
@@ -42,6 +42,7 @@ public:
        * what[2] contains the constructor parameters
        */
 
+      
       /*
       std::cout << "0: " << std::string(what[0].first, what[0].second) << std::endl;
       std::cout << "1: " << std::string(what[1].first, what[1].second) << std::endl;
@@ -51,6 +52,9 @@ public:
       std::cout << "5: " << std::string(what[5].first, what[5].second) << std::endl;
       std::cout << "6: " << std::string(what[6].first, what[6].second) << std::endl;
       */
+
+      parents.push_back(std::string(what[2].first, what[2].second));
+      
       // update search position: 
       start = what[0].second; 
 
@@ -70,7 +74,7 @@ public:
     end = file_content.end(); 
     boost::match_results<std::string::const_iterator> what; 
     boost::match_flag_type flags = boost::match_default; 
-    while(regex_search(start, end, what, class_regex, flags)) 
+    while (regex_search(start, end, what, class_regex, flags)) 
     { 
       // what[0] contains the whole string 
       // what[1] conttains the template specialisation if any. 
@@ -97,6 +101,7 @@ public:
 
       cm.add_class(std::string(what[5].first, what[5].second),
                    std::string(what[3].first, what[3].second),
+                   parent_class,
                    filename, what[5].first - file_content.begin());
 
       // update search position: 

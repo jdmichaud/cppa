@@ -55,6 +55,7 @@ public:
       {
         res += "+ identifier: " + classes[i].m_class_name + "\n";
         res += "  template specialisation: " + classes[i].m_template_specialisation + "\n";
+        res += "  derived from: " + classes[i].m_parent_class_str + "\n";
         res += "  filename : " + classes[i].m_filename + "\n";
         res += "  line: " + boost::lexical_cast<std::string>(classes[i].m_line) + ((i + 1 == classes.size()) ? "" : "\n");
       }
@@ -64,7 +65,8 @@ public:
       for (unsigned int i = 0; i < classes.size(); ++i)
       {
         res += "[" + boost::lexical_cast<std::string>(i) + "]";
-        res += "  template specialisation: " + classes[i].m_template_specialisation;
+        res += " template specialisation: " + classes[i].m_template_specialisation;
+        res += " derived from: " + classes[i].m_parent_class_str;
         res += " filename : " + classes[i].m_filename;
         res += " line: " + boost::lexical_cast<std::string>(classes[i].m_line) + ((i + 1 == classes.size()) ? "" : "\n");
       }
@@ -119,7 +121,7 @@ public:
 
   int get_var_id_starts_with(const char *c, std::vector<std::string> &ids)
   {
-    for (unsigned int i = 0; i < m_classes.size(); ++i)
+    for (unsigned int i = 0; i < m_vars.size(); ++i)
       if (m_vars[i].m_identifier.find(c) == 0)
         ids.push_back(m_vars[i].m_identifier);
   }

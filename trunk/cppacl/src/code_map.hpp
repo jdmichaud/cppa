@@ -19,10 +19,12 @@ class class_repr : public representation
 public:
   class_repr(const std::string &class_name, 
              const std::string &template_specialisation,
+             const std::string &parent_class_str,
              const std::string &filename,
              unsigned long line) :
               m_class_name(class_name), 
               m_template_specialisation(template_specialisation),
+              m_parent_class_str(parent_class_str),
               m_filename(filename),
               m_line(line)
   {
@@ -32,6 +34,7 @@ public:
   {
     m_class_name = rhs.m_class_name;
     m_template_specialisation = rhs.m_template_specialisation;
+    m_parent_class_str = rhs.m_parent_class_str;
     m_filename = rhs.m_filename;
     m_line = rhs.m_line;
     return *this;
@@ -42,6 +45,7 @@ public:
     output << "class" << std::endl;
     output << " name: " << m_class_name << std::endl;
     output << " template specialisation: " << m_template_specialisation << std::endl;
+    output << " parent class str: " << m_parent_class_str << std::endl;
     output << " filename: " << m_filename << std::endl;
     output << " line: " << m_line << std::endl;
     return output;
@@ -49,6 +53,7 @@ public:
 
   std::string m_class_name;
   std::string m_template_specialisation;
+  std::string m_parent_class_str;
   std::string m_filename;
   unsigned long m_line;
 

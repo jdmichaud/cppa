@@ -42,11 +42,15 @@ void database::init(const std::string &database_filename, bool write)
 int database::create_database()
 {
   sqlite3_exec(m_database, "CREATE DATABASE cppadatabase;", NULL, NULL, NULL);
-  sqlite3_exec(m_database, "CREATE TABLE class (identifier                varchar,  \
+  sqlite3_exec(m_database, "CREATE TABLE class (guid INTEGER PRIMARY KEY,           \
+                                                identifier                varchar,  \
                                                 template_specialisation   varchar,  \
+                                                parent_class              varchar,  \
+                                                derived_class             varchar,  \
                                                 filename                  varchar,  \
                                                 line                      varchar);", NULL, NULL, NULL);
-  sqlite3_exec(m_database, "CREATE TABLE var (identifier                varchar,  \
+  sqlite3_exec(m_database, "CREATE TABLE var (guid INTEGER PRIMARY KEY,           \
+                                              identifier                varchar,  \
                                               type                      varchar,  \
                                               qualifier                 varchar,  \
                                               nature                    varchar,  \
