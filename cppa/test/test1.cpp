@@ -16,7 +16,7 @@ class forward_declaration;
 
 class ouch : private aie {};
 
-class ouch1 : private aie(MACRO) {};
+class ouch1 : private aie {};
 
 class ouch2 : private aie(MACRO), public oula {};
 

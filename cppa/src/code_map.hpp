@@ -20,10 +20,12 @@ class class_repr : public representation
 public:
   class_repr(const std::string &class_name, 
              const std::string &template_specialisation,
+             const std::string &parent_class_str,
              const std::string &filename,
              unsigned long &line) :
               m_class_name(class_name), 
               m_template_specialisation(template_specialisation),
+              m_parent_class_str(parent_class_str),
               m_filename(filename),
               m_line(line)
   {
@@ -33,6 +35,8 @@ public:
   {
     m_class_name = rhs.m_class_name;
     m_template_specialisation = rhs.m_template_specialisation;
+    m_parent_class_str = rhs.m_parent_class_str;
+    m_derived_class_str = rhs.m_derived_class_str;
     m_filename = rhs.m_filename;
     m_line = rhs.m_line;
     return *this;
@@ -42,9 +46,11 @@ public:
   {
     std::ostringstream query;
 
-    query << "INSERT INTO class (identifier, template_specialisation, filename, line) VALUES (";
+    query << "INSERT INTO class (identifier, template_specialisation, parent_class, derived_class, filename, line) VALUES (";
     query << "'" << m_class_name << "', ";
     query << "'" << m_template_specialisation << "', ";
+    query << "'" << m_parent_class_str << "', ";
+    query << "'" << m_derived_class_str << "', ";
     query << "'" << m_filename << "', ";
     query << "'" << m_line << "');";
 
@@ -76,6 +82,8 @@ public:
 
   std::string m_class_name;
   std::string m_template_specialisation;
+  std::string m_parent_class_str;
+  std::string m_derived_class_str;
   std::string m_filename;
   unsigned long m_line;
 
@@ -151,11 +159,17 @@ class code_map
 public:
   void add_class(const std::string &identifier,
                  const std::string &template_specialisation,
+                 const std::vector<std::string> &parent_class,
                  const std::string &filename,
                  unsigned long     line)
   {
+    std::string parent_class_str;
+    for (int i = 0; i < parent_class.size(); ++i)
+      parent_class_str += parent_class[i] + (i + 1 < parent_class.size() ? "|" : "");
+
     m_class_vector.push_back(class_repr(identifier, 
                                         template_specialisation,
+                                        parent_class_str,
                                         filename,
                                         line));
 
