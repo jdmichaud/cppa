@@ -33,7 +33,6 @@ public:
         ("version,v", "display version")
         ("config-file,c", po::value<std::string>()->default_value("cppacl.rc"), "specify the configuration file")
         ("db-file,d", po::value<std::string>(), "database file")
-        ("load-file,l", "load database file at start (long to start, but fast to use)")
     ;
   }
 
@@ -73,7 +72,6 @@ public:
        */
       m_config_file = vm["config-file"].as<std::string>();
       m_database_file = (vm.count("db-file")) ? vm["db-file"].as<std::string>() : DEFAULT_DB_FILE;
-      m_load_at_startup = (vm.count("load-file")) ? true : false;
       return true;
     }
     catch(std::exception& e) 
@@ -108,7 +106,6 @@ private:
 public: // option members
   std::string               m_config_file;
   std::string               m_database_file;
-  bool                      m_load_at_startup;
 };
 
 
